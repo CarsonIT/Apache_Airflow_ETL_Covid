@@ -23,7 +23,6 @@ from airflow.models import Variable
 from airflow.operators.python import PythonOperator, BranchPythonOperator
 from urllib.request import urlopen, URLError
 from airflow.contrib.operators.slack_webhook_operator import SlackWebhookOperator
-import numpy as np
 from psycopg2.extensions import register_adapter, AsIs
 
 
@@ -174,12 +173,23 @@ def Load_Case_Vac_TheGioi(**context):
         row = df.loc[i]
         row = pd.DataFrame(row)
         row = row.transpose()
+        row['CountryID']= row['CountryID'].astype(int)
+        row['total_cases']= row['total_cases'].astype(int)
+        row['new_cases']= row['new_cases'].astype(int)
+        row['total_deaths']= row['total_deaths'].astype(int)
+        row['new_deaths']= row['new_deaths'].astype(int)
+        row['total_vaccinations']= row['total_vaccinations'].astype(int)
+        row['people_vaccinated']= row['people_vaccinated'].astype(int)
+        row['people_fully_vaccinated']= row['people_fully_vaccinated'].astype(int)
         print(" Thong tin kieu du lieu", row.info())
         print (" từng dòng trong row", row)
         print("Country ID ne Phuong: ", str(row['CountryID'][i]))
         print("Son Pause")
         query = "select * from \"World_Covid_Des\"  where \"CountryID\" =" + str(row['CountryID'][i]) + "and date = '"+ str(row['date'][i]) +"'"
         row_des = pd.read_sql(query, engine_des)
+        print("Row des by Son", row_des)
+        print("Leng by Son", len(row_des))
+        print("i = ",i)
         if len(row_des) == i: # Nếu quốc gia đó vào ngày đó chưa có trong Des
             row.to_sql('World_Covid_Des', engine_des, if_exists='append', index=False) # insert dòng đó vào Des
         else: 
@@ -190,7 +200,7 @@ def Load_Case_Vac_TheGioi(**context):
 
 
 # Tạo DAG ETL_World, được lập lịch chạy vào mỗi ngày vào các thời điểm: 0:00, 3:00, 10:00, 12:00, 12:00, 14:00, 17:00, 22:00 (UTC +0), ngày bắt đầu là 17/06/2022, và không thực hiện backfilling để chạy DAG trong quá khứ, thêm tags để dễ dàng tìm kiếm DAG trên giao diện web Airflow 
-with DAG(dag_id="ETL_World",schedule_interval = "0 0,3,10,12,14,17,22 * * *", start_date=datetime(2022, 6, 17),catchup=False,  tags=["Airflow_ETL_"]) as dag:
+with DAG(dag_id="ETL_World_DataCovid",schedule_interval = "0 0,3,10,12,14,17,22 * * *", start_date=datetime(2022, 6, 17),catchup=False,  tags=["Airflow_ETL_"]) as dag:
     # task PythonSensor chờ nguồn có dữ liệu mới
     wait_for_data_case_vac_new = PythonSensor(
         task_id="wait_for_data_case_vac_new",

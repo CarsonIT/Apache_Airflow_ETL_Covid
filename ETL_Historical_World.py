@@ -135,7 +135,7 @@ def Load_Case_Vac(**context):
 
 
 # Tạo DAG Historical_World_ETL_Data, với số lần chạy DAG nhiều nhất trong 1 thời điểm là 1 lần (max_active_runs=1), catchup=True để thực hiện backfilling để chạy DAG trong quá khứ từ ngày 01/01/2020 đến ngày 16/06/2022 và mỗi ngày 1 lần chạy DAG (schedule_interval = "@daily"), thêm tags để dễ dàng tìm kiếm DAG trên giao diện web Airflow 
-with DAG(dag_id="Historical_World_ETL_Data", max_active_runs=1 ,schedule_interval = "@daily", start_date=datetime(2020, 1, 1), end_date=datetime(2022, 6, 16),catchup=True,  tags=["Airflow_ETL_"]) as dag:
+with DAG(dag_id="Backfilling_ETL_World", max_active_runs=1 ,schedule_interval = "@daily", start_date=datetime(2020, 1, 1), end_date=datetime(2022, 7, 4),catchup=True,  tags=["Airflow_ETL_"]) as dag:
     # task rút trích dữ liệu từ nguồn đổ vào DB StageCovid
     Load_to_Stage = PythonOperator(
         task_id ='Load_to_Stage',
