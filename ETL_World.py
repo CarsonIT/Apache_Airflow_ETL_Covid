@@ -190,9 +190,10 @@ def Load_Case_Vac_TheGioi(**context):
         print("Row des by Son", row_des)
         print("Leng by Son", len(row_des))
         print("i = ",i)
-        if len(row_des) == i: # Nếu quốc gia đó vào ngày đó chưa có trong Des
+        if len(row_des) == 0: # Nếu quốc gia đó vào ngày đó chưa có trong Des
             row.to_sql('World_Covid_Des', engine_des, if_exists='append', index=False) # insert dòng đó vào Des
         else: 
+            print("Update Son ne:", i)
             query= "update \"World_Covid_Des\" set total_cases=" + str(row['total_cases'][i]) + ",new_cases =" + str(row['new_cases'][i]) + ", total_deaths ="+ str(row['total_deaths'][i]) + ", new_deaths ="+ str(row['new_deaths'][i]) + ", total_vaccinations ="+ str(row['total_vaccinations'][i]) +  ", people_vaccinated ="+ str(row['people_vaccinated'][i]) +  ", people_fully_vaccinated ="+ str(row['people_fully_vaccinated'][i]) + " where \"CountryID\" = " + str(row['CountryID'][i]) + "and date = '"+ row['date'][i] +"'"
             cursor = dbconnect.cursor()
             cursor.execute(query)
