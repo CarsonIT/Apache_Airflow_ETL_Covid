@@ -97,7 +97,7 @@ def wait_for_data_case_new():
             datetime_extract_case_VN = df['last_updated'][0]
             Variable.update(key='datetime_extract_case_VN', value=datetime_extract_case_VN)
             return True
-        return True
+        return False
         
     except Exception as e:
         raise ValueError('Email to DataEngineer about error that: ',e)
@@ -118,7 +118,7 @@ def wait_for_data_vac_old():
             datetime_extract_vac_VN = df['last_updated'][0]
             Variable.update(key='datetime_extract_vac_VN', value=datetime_extract_vac_VN)
             return True
-        return True
+        return False
 
     except Exception as e:
         raise ValueError('Email to DataEngineer about error that: ',e)

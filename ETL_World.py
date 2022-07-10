@@ -77,7 +77,8 @@ def wait_for_data_source_new():
         # Lấy dữ liệu của bảng World_Covid trong stage
         df_stage = pd.read_sql("select * from \"World_Covid\"", engine_stage); 
         # Ép kiểu của stage cho giống source để so sánh 
-        df_stage = df_stage.astype(df_source.dtypes)
+        #df_stage = df_stage.astype(df_source.dtypes)
+        df_source = df_source.astype(df_stage.dtypes)
 
         # Tạo 1 df để lấy những dòng khác nhau giữa Stage và Source
         df_diff = pd.concat([df_source,df_stage]).drop_duplicates(keep=False)
